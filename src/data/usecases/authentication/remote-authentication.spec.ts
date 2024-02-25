@@ -1,3 +1,4 @@
+import { mockAuthentication } from "../../../domain/test/mock-authentication"
 import { HttpPostClientSpy } from "../../test/mock-http-client"
 import { RemoteAuthentication } from "./remote-authentication"
 
@@ -20,7 +21,14 @@ describe('RemoteAuthentication', () => {
   test('Should call HttpPostClient with correct URL', async () => {
     const url = 'other_url'
     const { sut, httpPostClientSpy } = makeSut(url)
-    await sut.auth()
-    expect(httpPostClientSpy.url).toBe(url)
+    await sut.auth(mockAuthentication())
+    expect(httpPostClientSpy.url).toEqual(url)
+  })
+
+  test('Should call HttpPostClient with correct Body', async () => {
+    const { sut, httpPostClientSpy } = makeSut()
+    const AuthenticationParams = mockAuthentication()
+    await sut.auth(AuthenticationParams)
+    expect(httpPostClientSpy.body).toEqual(AuthenticationParams)
   })
 })
